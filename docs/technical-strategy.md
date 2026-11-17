@@ -14,17 +14,20 @@ La especificación funcional se mantiene en docs/pmv-specification.md y el traba
 | Backend/API | FastAPI |
 | Base de datos | PostgreSQL |
 | ORM | SQLAlchemy 2 |
+| Migraciones | Alembic |
 | Validación/configuración | Pydantic 2 / Pydantic Settings |
 | Cliente HTTP | httpx |
 | Scheduler | APScheduler |
 | Matching | Motor determinista + análisis semántico con IA |
 | Frontend PMV | Jinja2 + HTMX + Bootstrap |
 | Tests | pytest |
+| Calidad de código | Ruff |
+| Entorno/paquetes | Python virtualenv + requirements.txt inicialmente |
 | Contenedores | Docker + Docker Compose |
 | Control de versiones | Git + GitHub |
 | CI | GitHub Actions |
 
-El PMV utilizará una arquitectura monolítica modular. No se introducen microservicios, React, Kubernetes ni Redis salvo necesidad técnica posterior.
+El PMV utilizará una arquitectura monolítica modular. No se introducen microservicios, React/Next.js, Kubernetes, Celery ni Redis salvo que una necesidad técnica posterior lo justifique.
 
 ## 3. Arquitectura
 
@@ -297,8 +300,26 @@ GitHub Actions ejecutará:
 
 No se implementará el collector de InfoJobs antes de cerrar la arquitectura de persistencia y dominio.
 
-## 17. Decisión técnica definitiva
+## 17. Validación del stack frente a proyectos similares
 
-Python + FastAPI + PostgreSQL + SQLAlchemy + Pydantic + APScheduler + Jinja2/HTMX/Bootstrap + matching híbrido + IA + Docker + GitHub Actions.
+Se revisaron repositorios públicos de agregadores de empleo, sistemas de matching y asistentes de búsqueda laboral. Se repiten especialmente FastAPI/Python en backend, PostgreSQL + SQLAlchemy en persistencia, Alembic para migraciones, Docker, pytest y GitHub Actions. Los proyectos de mayor escala suelen añadir Celery + Redis para procesamiento distribuido y React/Next.js para interfaces SPA; otros proyectos de un solo usuario utilizan Jinja2 con FastAPI y PostgreSQL.
 
-Arquitectura: monolito modular preparado para incorporar nuevos portales posteriormente.
+Ejemplos revisados:
+
+- Job Service: FastAPI + PostgreSQL + SQLAlchemy y runner programado para agregación de ofertas.
+- CareerPilot: FastAPI + PostgreSQL + pgvector + SQLAlchemy + Next.js.
+- Job Radar: FastAPI + PostgreSQL + Celery + Redis + Next.js.
+- agenticJobSearch: FastAPI + Jinja2 + PostgreSQL + SQLAlchemy + Alembic + Docker + pytest + GitHub Actions.
+- Smart Job Recommendation System: FastAPI + PostgreSQL + SQLAlchemy + Alembic + scikit-learn.
+
+La conclusión es que el stack inicialmente definido es correcto para el PMV, pero se incorporan dos herramientas que aparecen repetidamente en proyectos más maduros: **Alembic** para migraciones y **Ruff** para calidad de código.
+
+No se adopta Celery + Redis porque el PMV será inicialmente una aplicación de un solo usuario con búsquedas periódicas cada 60 minutos. Añadir un broker y workers distribuidos aumentaría considerablemente la complejidad sin aportar una ventaja proporcional. Tampoco se adopta React/Next.js: Jinja2 + HTMX mantiene el PMV como monolito sencillo y permite construir la interfaz necesaria sin introducir un segundo runtime.
+
+## 18. Decisión técnica definitiva
+
+**Python 3.12+ + FastAPI + PostgreSQL + SQLAlchemy 2 + Alembic + Pydantic 2 + httpx + APScheduler + Jinja2/HTMX/Bootstrap + matching híbrido + IA + pytest + Ruff + Docker + GitHub Actions.**
+
+Arquitectura: **monolito modular**, preparado para incorporar nuevos portales posteriormente.
+
+Principio de decisión: utilizar herramientas ampliamente presentes en proyectos similares, pero evitar componentes de infraestructura distribuidos que el PMV no necesita todavía.
