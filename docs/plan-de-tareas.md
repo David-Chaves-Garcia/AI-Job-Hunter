@@ -8,8 +8,8 @@
 - [x] Crear estructura inicial del proyecto
 - [x] Definir especificación del PMV
 - [x] Establecer documentación del proyecto en español
-- [ ] Definir estrategia técnica definitiva
-- [ ] Definir stack tecnológico
+- [x] Definir estrategia técnica definitiva
+- [x] Definir stack tecnológico
 - [ ] Configurar entorno de desarrollo local
 - [ ] Configurar ejecución del proyecto
 - [ ] Configurar sistema de logs
