@@ -10,7 +10,7 @@
 - [x] Establecer documentación del proyecto en español
 - [x] Definir estrategia técnica definitiva
 - [x] Definir stack tecnológico
-- [ ] Configurar entorno de desarrollo local
+- [x] Configurar entorno de desarrollo local
 - [ ] Configurar ejecución del proyecto
 - [ ] Configurar sistema de logs
 - [ ] Definir estrategia de tests
